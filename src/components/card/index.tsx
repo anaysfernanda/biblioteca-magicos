@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Card from "@mui/material/Card";
 import {
   Button,
@@ -10,13 +10,14 @@ import {
 import "./estilo.css";
 
 interface CardDefaultProps {
-  id: number;
+  id: string;
   titulo: string;
   autor: string;
   anoPublicacao: string;
   dataCadastro: string;
   genero: string;
   descricao: string;
+  excluir: (id: string) => void;
 }
 
 export const CardDefault = ({
@@ -27,33 +28,51 @@ export const CardDefault = ({
   dataCadastro,
   genero,
   descricao,
+  excluir,
 }: CardDefaultProps) => {
+
+  const [activeCard, setActiveCard] = useState(false)
+
+  const handleFlip = () => {
+    setActiveCard(!activeCard)
+  }
+
+  const excluirCard = () =>{
+    excluir(id)
+  }
+
   return (
-    <Grid className="flip-container" item xs={6} md={3}>
-      <Card className="flipper">
-        <CardContent className="front">
-          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+    <Grid className="card-container" item xs={6} md={3}>
+      <Card className={`card ${activeCard? 'cardFlip':''}`} >
+
+        <CardContent className={`front`} >
+          <Typography sx={{ fontSize: 14 }} gutterBottom>
             {autor}
           </Typography>
           <Typography variant="h5" component="div">
             {titulo}
           </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+          <Typography sx={{ mb: 1.5 }}>
             {anoPublicacao}
           </Typography>
           <CardActions>
-            <Button size="small">Descrição</Button>
+            <Button onClick={handleFlip} style={{color:"white"}} size="small">Descrição</Button>
+            <Button onClick={excluirCard}> Excluir </Button>
           </CardActions>
         </CardContent>
 
-        <CardContent className="back">
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
+        <CardContent className={`back`} style={{backfaceVisibility: activeCard? "hidden" : "visible"}}>
+          <Typography sx={{ fontSize: 14 }} gutterBottom>
+            {genero}
+          </Typography>
+          <Typography sx={{ mb: 1.5 }} >
             {descricao}
           </Typography>
           <CardActions>
-            <Button size="small">Descrição</Button>
+            <Button onClick={handleFlip} style={{color:"white"}} size="small">Voltar</Button>
           </CardActions>
         </CardContent>
+        
       </Card>
     </Grid>
   );
