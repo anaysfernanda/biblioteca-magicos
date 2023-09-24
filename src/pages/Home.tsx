@@ -1,36 +1,15 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  TextField,
-} from "@mui/material";
-import React, { useState } from "react";
-// import Modal from "../components/Modal/modal";
+import { Button, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { CardDefault } from "../components/card";
 import moment from "moment";
-
-interface MagicBook {
-  id: number;
-  title: string;
-  author: string;
-  age: string;
-  register: string;
-  gender: string;
-  description: string;
-}
+import { Modal } from "../components/Modal/modal";
+import { Livro } from "../service/types";
 
 const Home: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>("");
-  const [author, setAuthor] = useState<string>("");
-  const [age, setAge] = useState<string>("");
-  const [register, setRegister] = useState<string>("");
-  const [gender, setGender] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [list, setList] = useState<MagicBook[]>([]);
+  const [list, setList] = useState<Livro[]>([]);
+
+  useEffect(()=>{})
 
   const localTime = new Date();
   const maxDate = moment(localTime).format("YYYY-MM-DDTHH:MM:SS");
@@ -45,140 +24,44 @@ const Home: React.FC = () => {
     setOpen(false);
   };
 
-  const handleSubmit = () => {
-    const newBook: MagicBook = {
-      id: Math.random(),
-      title,
-      author,
-      age,
-      register,
-      gender,
-      description,
-    };
+  const handleSubmit = (newBook: Livro) => {    
     setList([...list, newBook]);
-    setOpen(false);
-    handleClear();
-  };
 
-  const handleClear = () => {
-    setAge("");
-    setAuthor("");
-    setDescription("");
-    setGender("");
-    setRegister("");
-    setTitle("");
-  };
+    return newBook;
+  }  
+
+  const handleDelete = (idDeletado : string) => {
+    const updateList = list.filter((card) => card.id !== idDeletado)
+    setList(updateList)
+  }
 
   return (
+    <>
     <Grid container>
       <Grid item>
         <Button variant="outlined" onClick={handleClickOpen}>
           Adicionar Livro Mágico
         </Button>
       </Grid>
-      <Grid item>
+    </Grid> 
+
+      <Grid container m={2}>
         {list.map((book) => (
           <CardDefault
-            anoPublicacao={book.age}
-            autor={book.author}
-            dataCadastro={book.register}
-            descricao={book.description}
-            genero={book.gender}
+            anoPublicacao={book.anoPublicacao}
+            autor={book.autor}
+            dataCadastro={book.dataCadastro}
+            descricao={book.descricao}
+            genero={book.genero}
             id={book.id}
-            titulo={book.title}
+            titulo={book.titulo}
+            excluir={handleDelete}
           />
         ))}
       </Grid>
 
-      <Grid container alignItems={"center"}>
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Adicione um Livro Mágico</DialogTitle>
-          <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="title"
-              label="Título"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={title}
-              onChange={(ev) => setTitle(ev.target.value)}
-              required
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="author"
-              label="Autor"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={author}
-              onChange={(ev) => setAuthor(ev.target.value)}
-              required
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="age"
-              label="Ano de publicação"
-              type="datetime-local"
-              fullWidth
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-              value={age}
-              onChange={(ev) => setAge(ev.target.value)}
-              required
-              inputProps={{
-                max: `${maxDate}`,
-              }}
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="register"
-              label="Data de Cadastro"
-              type="date"
-              fullWidth
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-              value={register}
-              onChange={(ev) => setRegister(ev.target.value)}
-              required
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="gender"
-              label="Gênero"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={gender}
-              onChange={(ev) => setGender(ev.target.value)}
-              required
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="description"
-              label="Descrição"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={description}
-              onChange={(ev) => setDescription(ev.target.value)}
-              required
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button onClick={handleSubmit}>Salvar</Button>
-          </DialogActions>
-        </Dialog>
-      </Grid>
-    </Grid>
+      <Modal open={open} handleClose={handleClose} onSalvarLivro={handleSubmit} />
+    </>
   );
 };
 
