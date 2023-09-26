@@ -1,20 +1,16 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Container, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { CardDefault } from "../components/card";
 import moment from "moment";
 import { Modal } from "../components/Modal/modal";
 import { Livro } from "../service/types";
+import image from '../assets/images/livro.jpg';
+import { Wrap } from "../components/wrap";
+import { ButtonStyle } from "../components/Button";
 
 const Home: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [list, setList] = useState<Livro[]>([]);
-
-  useEffect(()=>{})
-
-  const localTime = new Date();
-  const maxDate = moment(localTime).format("YYYY-MM-DDTHH:MM:SS");
-
-  const today = new Date();
+  const [list, setList] = useState<Livro[]>([]);  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -37,11 +33,15 @@ const Home: React.FC = () => {
 
   return (
     <>
-    <Grid container>
+    <Wrap imageUrl={image} />
+    <Grid container
+  direction="row"
+  justifyContent="center"
+  alignItems="center">
       <Grid item>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Adicionar Livro Mágico
-        </Button>
+        <ButtonStyle onclick={handleClickOpen} texto="Adicione um Livro"/>
+          {/* Adicionar Livro Mágico
+        </Button> */}
       </Grid>
     </Grid> 
 
