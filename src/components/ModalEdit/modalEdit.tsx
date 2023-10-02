@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Livro } from "../../service/types";
+import { EditLivro } from "../../service/types";
 import {
   Button,
   Dialog,
@@ -8,35 +8,36 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
-import { v4 as createUuid } from "uuid";
 
-interface IsalvarLivro {
-  onSalvarLivro: (livro: Livro) => Livro;
+interface IeditarLivro {
+  id: string;
+  onEditarLivro: (livro: EditLivro) => void;
   handleClose: () => void;
   open: boolean;
 }
 
-export const Modal = ({ onSalvarLivro, open, handleClose }: IsalvarLivro) => {
+export const ModalEdit = ({
+  onEditarLivro,
+  open,
+  handleClose,
+  id,
+}: IeditarLivro) => {
   const [titulo, setTitulo] = useState("");
   const [autor, setAutor] = useState("");
-  const [anoPublicacao, setAnoPublicacao] = useState("");
-  const [dataCadastro, setDataCadastro] = useState("");
   const [genero, setGenero] = useState("");
   const [descricao, setDescricao] = useState("");
 
-  const salvarLivro = () => {
-    const newBook: Livro = {
-      id: createUuid(),
+  const editarLivro = () => {
+    const newBook = {
+      id,
       titulo,
       autor,
-      anoPublicacao,
-      dataCadastro,
       genero,
       descricao,
     };
     open = false;
     handleClose();
-    onSalvarLivro(newBook);
+    onEditarLivro(newBook);
     handleClear();
     return newBook;
   };
@@ -44,8 +45,6 @@ export const Modal = ({ onSalvarLivro, open, handleClose }: IsalvarLivro) => {
   const handleClear = () => {
     setTitulo("");
     setAutor("");
-    setAnoPublicacao("");
-    setDataCadastro("");
     setGenero("");
     setDescricao("");
   };
@@ -54,7 +53,7 @@ export const Modal = ({ onSalvarLivro, open, handleClose }: IsalvarLivro) => {
     <>
       {open && (
         <Dialog open={true}>
-          <DialogTitle>Adicione um Livro Mágico</DialogTitle>
+          <DialogTitle>Edite o Livro Mágico</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -78,31 +77,7 @@ export const Modal = ({ onSalvarLivro, open, handleClose }: IsalvarLivro) => {
               value={autor}
               onChange={(e) => setAutor(e.target.value)}
             />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="age"
-              label="Ano de publicação"
-              type="date"
-              fullWidth
-              variant="outlined"
-              value={anoPublicacao}
-              onChange={(e) => setAnoPublicacao(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ max: `${new Date().toISOString().split("T")[0]}` }}
-            />
-            <TextField
-              autoFocus
-              margin="dense"
-              id="register"
-              label="Data de Cadastro"
-              type="date"
-              fullWidth
-              variant="outlined"
-              value={dataCadastro}
-              onChange={(e) => setDataCadastro(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-            />
+
             <TextField
               autoFocus
               margin="dense"
@@ -128,7 +103,7 @@ export const Modal = ({ onSalvarLivro, open, handleClose }: IsalvarLivro) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancelar</Button>
-            <Button onClick={salvarLivro}>Salvar</Button>
+            <Button onClick={editarLivro}>Editar livro</Button>
           </DialogActions>
         </Dialog>
       )}

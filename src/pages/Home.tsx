@@ -1,16 +1,16 @@
 import { Button, Container, Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { CardDefault } from "../components/card";
-import moment from "moment";
 import { Modal } from "../components/Modal/modal";
-import { Livro } from "../service/types";
-import image from '../assets/images/livro.jpg';
+import { EditLivro, Livro } from "../service/types";
+import image from "../assets/images/livro.jpg";
 import { Wrap } from "../components/wrap";
 import { ButtonStyle } from "../components/Button";
+import { ModalEdit } from "../components/ModalEdit/modalEdit";
 
 const Home: React.FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const [list, setList] = useState<Livro[]>([]);  
+  const [list, setList] = useState<Livro[]>([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -20,30 +20,40 @@ const Home: React.FC = () => {
     setOpen(false);
   };
 
-  const handleSubmit = (newBook: Livro) => {    
+  const handleSubmit = (newBook: Livro) => {
     setList([...list, newBook]);
 
     return newBook;
-  }  
+  };
 
-  const handleDelete = (idDeletado : string) => {
-    const updateList = list.filter((card) => card.id !== idDeletado)
-    setList(updateList)
-  }
+  const handleDelete = (idDeletado: string) => {
+    const updateList = list.filter((card) => card.id !== idDeletado);
+    setList(updateList);
+  };
+
+  const editarCard = (editLivro: EditLivro) => {
+    const updatedBookList = list.map((livro) => {
+      console.log(`id de cada livro ${livro.id}`);
+      return livro.id === editLivro.id ? { ...livro, ...editLivro } : livro;
+    });
+    setList(updatedBookList);
+  };
 
   return (
     <>
-    <Wrap imageUrl={image} />
-    <Grid container
-  direction="row"
-  justifyContent="center"
-  alignItems="center">
-      <Grid item>
-        <ButtonStyle onclick={handleClickOpen} texto="Adicione um Livro"/>
+      <Wrap imageUrl={image} />
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Grid item>
+          <ButtonStyle onclick={handleClickOpen} texto="Adicione um Livro" />
           {/* Adicionar Livro Mágico
         </Button> */}
+        </Grid>
       </Grid>
-    </Grid> 
 
       <Grid container m={2}>
         {list.map((book) => (
@@ -56,11 +66,16 @@ const Home: React.FC = () => {
             id={book.id}
             titulo={book.titulo}
             excluir={handleDelete}
+            editar={editarCard}
           />
         ))}
       </Grid>
 
-      <Modal open={open} handleClose={handleClose} onSalvarLivro={handleSubmit} />
+      <Modal
+        open={open}
+        handleClose={handleClose}
+        onSalvarLivro={handleSubmit}
+      />
     </>
   );
 };

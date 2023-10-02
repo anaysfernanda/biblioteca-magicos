@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import {
   Button,
@@ -8,8 +8,8 @@ import {
   Grid,
 } from "@mui/material";
 import "./estilo.css";
-import { Modal } from "../Modal/modal";
-import { Livro } from "../../service/types";
+import { EditLivro } from "../../service/types";
+import { ModalEdit } from "../ModalEdit/modalEdit";
 
 interface CardDefaultProps {
   id: string;
@@ -20,6 +20,7 @@ interface CardDefaultProps {
   genero: string;
   descricao: string;
   excluir: (id: string) => void;
+  editar: (livro: EditLivro) => void;
 }
 
 export const CardDefault = ({
@@ -31,67 +32,89 @@ export const CardDefault = ({
   genero,
   descricao,
   excluir,
+  editar,
 }: CardDefaultProps) => {
-
-  const [activeCard, setActiveCard] = useState(false)
+  const [activeCard, setActiveCard] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
 
   const handleClose = () => {
     setOpen(false);
   };
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
   const handleFlip = () => {
-    setActiveCard(!activeCard)
-  }
+    setActiveCard(!activeCard);
+  };
 
-  const excluirCard = (id: string) =>{
-    console.log(id);
-    excluir(id)
-  }
+  const excluirCard = (id: string) => {
+    excluir(id);
+  };
 
-  const editarCard = (editLivro: Livro) => {
-    
-    return editLivro
-  }
+  const editarCard = (editLivro: EditLivro) => {
+    return editLivro;
+  };
 
   return (
     <>
-    <Grid className="card-container" item xs={6} md={3}>
-      <Card className={`card ${activeCard? 'cardFlip':''}`} >
+      <Grid className="card-container" item xs={6} md={3}>
+        <Card className={`card ${activeCard ? "cardFlip" : ""}`}>
+          <CardContent className={`front`}>
+            <Typography sx={{ fontSize: 14 }} gutterBottom>
+              {autor}
+            </Typography>
+            <Typography variant="h5" component="div">
+              {titulo}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }}>{anoPublicacao}</Typography>
+            <CardActions>
+              <Button
+                onClick={handleFlip}
+                style={{ color: "white" }}
+                size="small"
+              >
+                Descrição
+              </Button>
+              <Button onClick={() => excluirCard(id)}> Excluir </Button>
+            </CardActions>
+          </CardContent>
 
-        <CardContent className={`front`} >
-          <Typography sx={{ fontSize: 14 }} gutterBottom>
-            {autor}
-          </Typography>
-          <Typography variant="h5" component="div">
-            {titulo}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }}>
-            {anoPublicacao}
-          </Typography>
-          <CardActions>
-            <Button onClick={handleFlip} style={{color:"white"}} size="small">Descrição</Button>
-            <Button onClick={() => excluirCard(id)}> Excluir </Button>
-          </CardActions>
-        </CardContent>
+          <CardContent
+            className={`back`}
+            style={{ backfaceVisibility: activeCard ? "hidden" : "visible" }}
+          >
+            <Typography sx={{ fontSize: 14 }} gutterBottom>
+              {genero}
+            </Typography>
+            <Typography sx={{ mb: 1.5 }}>{descricao}</Typography>
+            <CardActions>
+              <Button
+                onClick={handleFlip}
+                style={{ color: "white" }}
+                size="small"
+              >
+                Voltar
+              </Button>
+              <Button
+                onClick={handleClickOpen}
+                style={{ color: "white" }}
+                size="small"
+              >
+                Editar
+              </Button>
+            </CardActions>
+          </CardContent>
+        </Card>
+      </Grid>
 
-        <CardContent className={`back`} style={{backfaceVisibility: activeCard? "hidden" : "visible"}}>
-          <Typography sx={{ fontSize: 14 }} gutterBottom>
-            {genero}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} >
-            {descricao}
-          </Typography>
-          <CardActions>
-            <Button onClick={handleFlip} style={{color:"white"}} size="small">Voltar</Button>
-            {/* <Button onClick={editarCard} style={{color:"white"}} size="small">Editar</Button> */}
-          </CardActions>
-        </CardContent>
-        
-      </Card>
-    </Grid>
-
-    <Modal open={open} handleClose={handleClose} onSalvarLivro={editarCard} />
+      <ModalEdit
+        id={id}
+        handleClose={handleClose}
+        open={open}
+        onEditarLivro={editar}
+      />
     </>
   );
 };
