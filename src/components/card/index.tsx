@@ -8,6 +8,8 @@ import {
   Grid,
 } from "@mui/material";
 import "./estilo.css";
+import { Modal } from "../Modal/modal";
+import { Livro } from "../../service/types";
 
 interface CardDefaultProps {
   id: string;
@@ -32,16 +34,28 @@ export const CardDefault = ({
 }: CardDefaultProps) => {
 
   const [activeCard, setActiveCard] = useState(false)
+  const [open, setOpen] = useState<boolean>(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleFlip = () => {
     setActiveCard(!activeCard)
   }
 
-  const excluirCard = () =>{
+  const excluirCard = (id: string) =>{
+    console.log(id);
     excluir(id)
   }
 
+  const editarCard = (editLivro: Livro) => {
+    
+    return editLivro
+  }
+
   return (
+    <>
     <Grid className="card-container" item xs={6} md={3}>
       <Card className={`card ${activeCard? 'cardFlip':''}`} >
 
@@ -57,7 +71,7 @@ export const CardDefault = ({
           </Typography>
           <CardActions>
             <Button onClick={handleFlip} style={{color:"white"}} size="small">Descrição</Button>
-            <Button onClick={excluirCard}> Excluir </Button>
+            <Button onClick={() => excluirCard(id)}> Excluir </Button>
           </CardActions>
         </CardContent>
 
@@ -70,10 +84,14 @@ export const CardDefault = ({
           </Typography>
           <CardActions>
             <Button onClick={handleFlip} style={{color:"white"}} size="small">Voltar</Button>
+            {/* <Button onClick={editarCard} style={{color:"white"}} size="small">Editar</Button> */}
           </CardActions>
         </CardContent>
         
       </Card>
     </Grid>
+
+    <Modal open={open} handleClose={handleClose} onSalvarLivro={editarCard} />
+    </>
   );
 };

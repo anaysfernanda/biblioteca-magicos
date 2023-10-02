@@ -8,6 +8,8 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { v4 as createUuid } from "uuid";
+
 
 interface IsalvarLivro {
   onSalvarLivro: (livro: Livro) => Livro;
@@ -16,8 +18,6 @@ interface IsalvarLivro {
 }
 
 export const Modal = ({onSalvarLivro, open, handleClose}:IsalvarLivro) => {
-
-  const [id, setId] = useState('')
   const [titulo, setTitulo] = useState('')
   const [autor, setAutor] = useState('')
   const [anoPublicacao, setAnoPublicacao] = useState('');
@@ -27,7 +27,7 @@ export const Modal = ({onSalvarLivro, open, handleClose}:IsalvarLivro) => {
 
   const salvarLivro = () => {
     const newBook: Livro = {
-      id: 'teste',
+      id: createUuid(),
       titulo,
       autor,
       anoPublicacao,
@@ -89,6 +89,8 @@ export const Modal = ({onSalvarLivro, open, handleClose}:IsalvarLivro) => {
                 variant="outlined"
                 value={anoPublicacao}
                 onChange={e => setAnoPublicacao(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+               inputProps={{ max: `${new Date().toISOString().split("T")[0]}` }}
               />
               <TextField
                 autoFocus
@@ -100,6 +102,7 @@ export const Modal = ({onSalvarLivro, open, handleClose}:IsalvarLivro) => {
                 variant="outlined"
                 value={dataCadastro}
                 onChange={e => setDataCadastro(e.target.value)}
+                InputLabelProps={{ shrink: true }}
               />
               <TextField
                 autoFocus
