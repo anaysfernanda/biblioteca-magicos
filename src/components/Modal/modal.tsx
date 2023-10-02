@@ -1,20 +1,21 @@
+import React, { useState } from "react";
+import { Livro } from "../../service/types";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Grid,
   TextField,
 } from "@mui/material";
-import React, { useState } from "react";
 
-// interface ModalProps {
-//   handleClose: () => void;
-//   open: boolean;
-// }
+interface IsalvarLivro {
+  onSalvarLivro: (livro: Livro) => Livro;
+  handleClose: () => void;
+  open: boolean;
+}
 
-export const Modal = ({onSalvarLivro}) => {
+export const Modal = ({onSalvarLivro, open, handleClose}:IsalvarLivro) => {
 
   const [id, setId] = useState('')
   const [titulo, setTitulo] = useState('')
@@ -24,23 +25,36 @@ export const Modal = ({onSalvarLivro}) => {
   const [genero, setGenero] = useState('');
   const [descricao, setDescricao] = useState('');
 
-  const salvarLivro(){
-    const data = {
-      id,
+  const salvarLivro = () => {
+    const newBook: Livro = {
+      id: 'teste',
       titulo,
       autor,
       anoPublicacao,
       dataCadastro,
       genero,
-      descricao
-    }
-    onSalvarLivro(data);
-}
+      descricao,
+    };
+    open = false;
+    handleClose();
+    onSalvarLivro(newBook)
+    handleClear();
+    return newBook;
+  };
+
+  const handleClear = () => {
+    setTitulo("");
+    setAutor("");
+    setAnoPublicacao("");
+    setDataCadastro("");
+    setGenero("");
+    setDescricao("");
+  };
 
   return (
     <>
-    {/*<><Grid container alignItems={"center"}> */}
-          <Dialog open={open} onClose={handleClose}>
+    {open &&(
+          <Dialog open={true} >
             <DialogTitle>Adicione um Livro Mágico</DialogTitle>
             <DialogContent>
               <TextField
@@ -74,7 +88,7 @@ export const Modal = ({onSalvarLivro}) => {
                 fullWidth
                 variant="outlined"
                 value={anoPublicacao}
-                onchange={e => setAnoPublicacao(e.target.value)}
+                onChange={e => setAnoPublicacao(e.target.value)}
               />
               <TextField
                 autoFocus
@@ -85,7 +99,7 @@ export const Modal = ({onSalvarLivro}) => {
                 fullWidth
                 variant="outlined"
                 value={dataCadastro}
-                onchange={e => setDataCadastro(e.target.value)}
+                onChange={e => setDataCadastro(e.target.value)}
               />
               <TextField
                 autoFocus
@@ -96,7 +110,7 @@ export const Modal = ({onSalvarLivro}) => {
                 fullWidth
                 variant="outlined"
                 value={genero}
-                onchange={e => setGenero(e.target.value)}
+                onChange={e => setGenero(e.target.value)}
               />
               <TextField
                 autoFocus
@@ -107,16 +121,15 @@ export const Modal = ({onSalvarLivro}) => {
                 fullWidth
                 variant="outlined"
                 value={descricao}
-                onchange={e => setDescricao(e.target.value)}
-
+                onChange={e => setDescricao(e.target.value)}
               />
             </DialogContent>
             <DialogActions>
-              <Button onClick={}>Cancelar</Button>
+              <Button >Cancelar</Button>
               <Button onClick={salvarLivro}>Salvar</Button>
             </DialogActions>
           </Dialog>
-        {/* </Grid> */}
+          )}
 </>
   );
 };
